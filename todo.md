@@ -6,8 +6,12 @@
 - [ ] todo now: nojs
 - [ ] todo now: think of name ; vlvt.dev
 - [ ] todo now: proper a11y
+- [x] todo now: icon
+- [x] todo now: cfg credit lucide on icon
 - [ ] todo now: revisit fonts ; i dont really like Lexend as header here
 - [ ] todo now: experiment with header to keep it minimalistic and out of attention unlike Rlim, how does monkeytype do it? ; it does so a UI element hmm
+- [ ] todo fun: make favicon shift with accent color
+- [ ] todo fun: themes w community via github, like monkeytype
 
 list:
 Wring it on hai :) esc
