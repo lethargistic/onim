@@ -4,7 +4,8 @@
     import type {BlockToolConstructable} from "@editorjs/editorjs";
     import {onMount} from "svelte";
     import Header from '@editorjs/header';
-    import List from '@editorjs/list';
+    import EditorjsList from "@editorjs/list";
+    import Delimiter from "@editorjs/delimiter";
 
     let editor: Nullable<EditorJS>;
 
@@ -12,6 +13,7 @@
     // TODO soon: i18n
     // TODO soon: data saving
     // TODO soon: data loading w data prop
+    // TODO soon: link tool
     onMount(async () => {
         const EditorJS = (await import("@editorjs/editorjs")).default;
 
@@ -23,9 +25,15 @@
             tools: {
                 header: {
                     class: absc<BlockToolConstructable>(Header),
-                    inlineToolbar: ['link']
                 },
-                list: List
+                list: {
+                    class: EditorjsList,
+                    inlineToolbar: true,
+                    config: {
+                        defaultStyle: 'unordered'
+                    }
+                },
+                delimiter: Delimiter
             }
         });
     })
@@ -71,7 +79,8 @@
         <main>
             <section class="editor-seg">
                 <!-- TODO: 間もなく make these random -->
-                <div bind:this={editorArea} contenteditable="true" id="editor-area">
+                <div class="editor-wrap">
+                    <div bind:this={editorArea} id="editor-area"></div>
                 </div>
             </section>
             <section class="publish-seg">
@@ -94,8 +103,28 @@
 
 <style>
     :global {
-        .ce-block__content {
-            margin: 0 0;
+        .ce-block__content,
+        .ce-toolbar__content {
+            max-width: unset;
+        }
+
+        .ce-popover {
+            --color-background: var(--background-color) !important;
+            --color-text-primary: var(--text-color) !important;
+        }
+
+        .ce-toolbar__plus, .ce-toolbar__settings-btn {
+            color: var(--text-color);
+            border-radius: 4px;
+        }
+
+        .ce-toolbar__plus:hover, .ce-toolbar__settings-btn:hover {
+            background-color: var(--accent-primary);
+            color: var(--background-color);
+        }
+
+        .cdx_block:focus-visible {
+            outline: none !important;
         }
     }
 
@@ -122,7 +151,7 @@
                     padding: 2.5rem 0.15rem 0;
                     box-sizing: border-box;
 
-                    & #editor-area {
+                    & .editor-wrap {
                         all: unset;
                         resize: none;
 
@@ -133,10 +162,6 @@
 
                         white-space: pre-wrap;
                         overflow-wrap: break-word;
-                    }
-
-                    & #editor-area:focus-visible {
-                        outline: none !important;
                     }
                 }
             }
