@@ -30,11 +30,11 @@
 		"vitest-browser-svelte": "^2.0.2"
 	},
 	"dependencies": {
-		"@editorjs/delimiter": "^1.4.2",
-		"@editorjs/editorjs": "^2.31.6",
-		"@editorjs/link": "^2.6.2",
-		"@editorjs/list": "^2.0.9",
 		"@supabase/ssr": "^0.10.0",
-		"@supabase/supabase-js": "^2.101.1"
+		"@supabase/supabase-js": "^2.101.1",
+		"@tiptap/core": "^3.22.5",
+		"@tiptap/extension-bubble-menu": "^3.22.5",
+		"@tiptap/pm": "^3.22.5",
+		"@tiptap/starter-kit": "^3.22.5"
 	}
 }

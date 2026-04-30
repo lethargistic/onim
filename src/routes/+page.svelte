@@ -1,41 +1,16 @@
 <script lang="ts">
-    import {absc, type Nullable} from "$lib/shared.svelte";
-    import type EditorJS from "@editorjs/editorjs";
-    import type {BlockToolConstructable} from "@editorjs/editorjs";
+    import {type Nullable} from "$lib/shared.svelte";
     import {onMount} from "svelte";
-    import Header from '@editorjs/header';
-    import EditorjsList from "@editorjs/list";
-    import Delimiter from "@editorjs/delimiter";
+    import Editor from "$lib/components/Editor.svelte";
 
-    let editor: Nullable<EditorJS>;
-
+    // TODO now: probably switch to a more classic editor
     // TODO soon: configure, add more plugins, make it proper
     // TODO soon: i18n
     // TODO soon: data saving
     // TODO soon: data loading w data prop
     // TODO soon: link tool
     onMount(async () => {
-        const EditorJS = (await import("@editorjs/editorjs")).default;
 
-        editor = new EditorJS({
-            holder: "editor-area",
-            placeholder: "Write something...",
-            autofocus: true,
-
-            tools: {
-                header: {
-                    class: absc<BlockToolConstructable>(Header),
-                },
-                list: {
-                    class: EditorjsList,
-                    inlineToolbar: true,
-                    config: {
-                        defaultStyle: 'unordered'
-                    }
-                },
-                delimiter: Delimiter
-            }
-        });
     })
 
     const handlePublish = (e: Event) => {
@@ -80,17 +55,20 @@
             <section class="editor-seg">
                 <!-- TODO: 間もなく make these random -->
                 <div class="editor-wrap">
+                    <Editor />
                     <div bind:this={editorArea} id="editor-area"></div>
                 </div>
             </section>
             <section class="publish-seg">
-                <button class="publish" aria-label="publish" onclick={handlePublish}>
-                    Publish
-                </button>
-                <input onkeydown={handlePublishInputKeys}
-                       autocomplete="off" type="text" maxlength="32" id="edit-code-input" placeholder="Custom edit code">
-                <input onkeydown={handlePublishInputKeys}
-                       autocomplete="off" type="text" maxlength="32" id="slug-input" placeholder="Custom url">
+                <div class="publish-inputs">
+                    <input onkeydown={handlePublishInputKeys}
+                           autocomplete="off" type="text" maxlength="32" id="edit-code-input" placeholder="Custom edit code">
+                    <input onkeydown={handlePublishInputKeys}
+                           autocomplete="off" type="text" maxlength="32" id="slug-input" placeholder="Custom url">
+                    <button class="publish-btn" aria-label="publish" onclick={handlePublish}>
+                        Publish
+                    </button>
+                </div>
 
                 <p>Your link: <span>ewewewe</span></p>
             </section>
@@ -126,6 +104,10 @@
         .cdx_block:focus-visible {
             outline: none !important;
         }
+
+        .codex-editor__redactor {
+            padding-bottom: 3rem !important;
+        }
     }
 
     .full-wrap {
@@ -147,7 +129,7 @@
 
             & main {
                 & .editor-seg {
-                    height: 100vh;
+                    min-height: 100vh;
                     padding: 2.5rem 0.15rem 0;
                     box-sizing: border-box;
 
@@ -162,6 +144,18 @@
 
                         white-space: pre-wrap;
                         overflow-wrap: break-word;
+                    }
+                }
+                & .publish-seg {
+                    display: grid;
+
+                    & .publish-inputs {
+                        display: flex;
+                        gap: 0.5rem;
+
+                        & .publish-btn {
+                            margin-left: auto;
+                        }
                     }
                 }
             }
