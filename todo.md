@@ -1,8 +1,13 @@
 
 - [ ] todo now: ui
 - [x] todo now: Editor.js?
+- [x] todo now: tiptap
 - [ ] todo now: finish editor
+- [ ] todo now: markdown
 - [ ] todo now: db
+- [ ] todo cfg: sanitize the html
+- [ ] todo cfg: rate limits
+- [ ] todo cfg: make edit codes have at minimum 6 (more?) characters
 - [ ] todo now: accounts
 - [ ] todo now: make title text alternate, come up with a lot of these
 - [ ] todo now: nojs
@@ -20,3 +25,12 @@ list:
 Wring it on hai :) esc
 Write... esc
 Clip your thing to the board esc
+
+
+CHORT:
+client sends tiptap json -> server db eats json 
+-> when asked
+if static page: server renders json and sanitizes it
+-> client renders static html
+else if edit code button: tiptap is on from the json
+-> editor is on

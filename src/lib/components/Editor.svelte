@@ -1,26 +1,26 @@
 <script lang="ts">
     import { onMount, onDestroy } from 'svelte'
-    import { Editor } from '@tiptap/core'
-    import { StarterKit } from '@tiptap/starter-kit'
-    import BubbleMenu from '@tiptap/extension-bubble-menu'
-    import type {Nullable} from "$lib/shared.svelte";
+    import {Editor,} from '@tiptap/core'
+    import {type Nullable, getEditorExtensions} from "$lib/shared.svelte";
 
     // TODO now: prettify
 
-    let { elem = $bindable<Nullable<HTMLElement>>(null)} = $props();
+    let { elem = $bindable<Nullable<HTMLElement>>(null), editorJSON = $bindable()} = $props();
 
     let bubbleMenu = $state<Nullable<HTMLElement>>()
     let editorState = $state<Record<string, Nullable<Editor>>>({editor: null})
 
-    onMount(() => {
+    $effect(() => {
+        editorJSON = editorState.editor?.getJSON()
+    })
+
+
+    const initEditor = () => {
+        if (!bubbleMenu) return;
+
         editorState.editor = new Editor({
             element: elem,
-            extensions: [
-                StarterKit,
-                BubbleMenu.configure({
-                    element: bubbleMenu,
-                }),
-            ],
+            extensions: getEditorExtensions(bubbleMenu),
             content: `
         <h1>Hello Svelte! 🌍️ </h1>
         <p>This editor is running in Svelte.</p>
@@ -31,6 +31,10 @@
                 editorState = { editor }
             },
         })
+    }
+
+    onMount(() => {
+        initEditor();
     })
     onDestroy(() => {
         editorState.editor?.destroy()

@@ -1,20 +1,13 @@
 <script lang="ts">
     import {type Nullable} from "$lib/shared.svelte";
     import Editor from "$lib/components/Editor.svelte";
+    import {createPost} from "./post.remote.ts";
 
     // TODO soon: configure, add more plugins, make it proper
     // TODO soon: i18n
     // TODO soon: data saving
     // TODO soon: data loading
     // TODO soon: link tool
-
-    const handlePublish = (e: Event) => {
-        if (e instanceof KeyboardEvent && e.key !== 'Enter') {
-            return;
-        }
-
-        // TODO now: publish
-    }
 
     let editorAreaContElem = $state<Nullable<HTMLDivElement>>(null);
     let editorContentEditElem = $state<Nullable<HTMLDivElement>>(null)
@@ -23,10 +16,7 @@
             editorAreaContElem?.firstElementChild as Nullable<HTMLDivElement>;
     });
 
-    $inspect(editorAreaContElem);
-    $inspect('edit', editorContentEditElem);
-
-    const handlePublishInputKeys = async (e: KeyboardEvent) => {
+    const handlePostInputKeys = async (e: KeyboardEvent) => {
         if (e.key === "ArrowUp") {
             if (!editorContentEditElem) return;
 
@@ -43,6 +33,10 @@
             e.preventDefault();
         }
     }
+
+    let editorJSON = $state<object | null>();
+
+    $inspect(editorJSON)
 </script>
 
 <div class="full-wrap">
@@ -59,19 +53,32 @@
             <section class="editor-seg">
                 <!-- TODO: 間もなく make placeholders random -->
                 <div class="editor-wrap">
-                    <Editor bind:elem={editorAreaContElem}/>
+                    <Editor bind:elem={editorAreaContElem} bind:editorJSON={editorJSON}/>
                 </div>
             </section>
-            <section class="publish-seg">
-                <div class="publish-inputs">
-                    <input onkeydown={handlePublishInputKeys}
-                           autocomplete="off" type="text" maxlength="32" id="edit-code-input" placeholder="Custom edit code">
-                    <input onkeydown={handlePublishInputKeys}
-                           autocomplete="off" type="text" maxlength="32" id="slug-input" placeholder="Custom url">
-                    <button class="publish-btn" aria-label="publish" onclick={handlePublish}>
-                        Publish
+            <section class="post-seg">
+                <form class="post-inputs" {...createPost}>
+                    <label>
+                        <input onkeydown={handlePostInputKeys}
+                               autocomplete="off"
+                               maxlength="32"
+                               id="slug-input"
+                               placeholder="Custom url"
+                               {...createPost.fields.slug.as('text')}
+                        >
+                    </label>
+                    <label>
+                        <input onkeydown={handlePostInputKeys}
+                               autocomplete="off" maxlength="32" id="edit-code-input"
+                               placeholder="Custom edit code"
+                               {...createPost.fields.edit_code.as('text')}
+                        >
+                    </label>
+                    <input type="hidden" {...createPost.fields.content.as('text', JSON.stringify(editorJSON))}>
+                    <button class="post-btn" onclick={() => console.log('post')}>
+                        Post
                     </button>
-                </div>
+                </form>
 
                 <p>Your link: <span>ewewewe</span></p>
             </section>
@@ -119,14 +126,15 @@
                         overflow-wrap: break-word;
                     }
                 }
-                & .publish-seg {
+
+                & .post-seg {
                     display: grid;
 
-                    & .publish-inputs {
+                    & .post-inputs {
                         display: flex;
                         gap: 0.5rem;
 
-                        & .publish-btn {
+                        & .post-btn {
                             margin-left: auto;
                         }
                     }
